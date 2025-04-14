@@ -65,39 +65,73 @@ function OrderContent() {
         const orderData = orderDetails.items?.[0];
         
         if (orderData && typeof window !== 'undefined' && window.dataLayer) {
+          // Debug what user data is available
+          console.log("Available user data sources:", {
+            billingDetails: orderData.billingDetails || "missing",
+            customerDetails: orderData.customerDetails || "missing",
+            customerEmail: orderData.customerEmail || "missing",
+            user: orderData.user || "missing",
+          });
+
           // Map products for GA4 ecommerce format
           const items = orderData.products?.map((product: any, index: number) => ({
             item_id: product.id || `product_${index}`,
             item_name: product.siteName || "Unlisted Product",
-            price: parseFloat(product.adjustedPrice || "0"),
-            currency: product.currency || "EUR",
             item_category: Array.isArray(product.category) ? product.category[0] : (product.category || "Uncategorized"),
-            item_variant: product.language || "",
+            price: parseFloat(product.adjustedPrice || "0"),
             quantity: 1,
-            index: index,
             domain_authority: product.domainAuthority || product.da || 0,
             domain_rating: product.domainRatings || product.dr || 0,
-            monthly_traffic: product.monthlyTraffic || 0
+            monthly_traffic: product.monthlyTraffic || 0,
+            language: product.language || ""
           })) || [];
 
+          // Extract user data with multiple fallbacks
+          const userDataRaw = {
+            firstName: orderData.billingDetails?.firstName || orderData.customerDetails?.firstName || orderData.user?.firstName || "",
+            lastName: orderData.billingDetails?.lastName || orderData.customerDetails?.lastName || orderData.user?.lastName || "",
+            email: orderData.billingDetails?.email || orderData.customerEmail || orderData.customerDetails?.email || orderData.user?.email || "",
+            phoneNumber: orderData.billingDetails?.phoneNumber || orderData.customerDetails?.phoneNumber || orderData.user?.phoneNumber || "",
+            city: orderData.billingDetails?.city || orderData.customerDetails?.city || orderData.user?.city || "",
+            country: orderData.billingDetails?.country || orderData.customerDetails?.country || orderData.user?.country || "",
+            postalCode: orderData.billingDetails?.postalCode || orderData.customerDetails?.postalCode || orderData.user?.postalCode || ""
+          };
+          
+          // Filter out empty values
+          const userData: Record<string, string> = {};
+          Object.entries(userDataRaw).forEach(([key, value]) => {
+            if (value && value.trim() !== "") {
+              userData[key] = value;
+            }
+          });
+
+          // Get any applied coupon code
+          const couponCode = orderData.couponCode || orderData.discountCode || "";
+
           // Push purchase event to dataLayer (GA4 standard event)
+          window.dataLayer.push({ ecommerce: null }); // Clear previous ecommerce object
           window.dataLayer.push({
             event: 'purchase',
+            user_data: userData,
             ecommerce: {
               transaction_id: orderNumber,
-              affiliation: "GermanGuestPost",
-              value: parseFloat(orderData.totalAmount || "0"),
-              tax: 0,
-              shipping: 0,
               currency: orderData.currency || "EUR",
+              value: parseFloat(orderData.totalAmount || "0"),
+              tax: parseFloat(orderData.taxAmount || "0"),
+              shipping: parseFloat(orderData.shippingAmount || "0"),
+              coupon: couponCode,
               items: items
             }
           });
           
-          console.log("🛒 Purchase event tracked in GA4:", {
+          console.log("🛒 Purchase event tracked with optimized structure:", {
             transaction_id: orderNumber,
             value: parseFloat(orderData.totalAmount || "0"),
-            items_count: items.length
+            currency: orderData.currency || "EUR",
+            items_count: items.length,
+            user_data_fields: Object.keys(userData),
+            coupon: couponCode || "none",
+            user_data_sample: userData.email ? { email: userData.email } : {}
           });
           
           // Mark as tracked in both state and sessionStorage

@@ -377,24 +377,43 @@ export function CartIndicator({ className, isOpen: externalIsOpen, onOpenChange 
       // return; 
     }
 
-    // --- ADD VIEW_CART TRACKING HERE --- 
+    // --- UPDATED VIEW_CART TRACKING --- 
     // Check conditions and fire tracking directly on click
-    // Use current cartItems state at the time of click
     if (isRegularUser && cartItems.length > 0) {
-      // Map cart items to STANDARD GA4 ecommerce format
+      // Map cart items to the desired GA4 ecommerce format
       const mappedItems = cartItems.map(item => ({
         item_id: item.id,
         item_name: item.siteName || item.title || "Untitled Product",
         item_category: Array.isArray(item.category) ? item.category.join(", ") : (item.category || "Uncategorized"),
         price: typeof item.price === 'string' ? parseFloat(item.price) : (typeof item.adjustedPrice === 'string' ? parseFloat(item.adjustedPrice) : item.price || 0),
-        quantity: 1, // Assuming quantity is 1 for view_cart
+        quantity: 1,
+        domain_authority: item.domainAuthority || item.da || 0,
+        domain_rating: item.domainRatings || item.dr || 0,
+        monthly_traffic: item.monthlyTraffic || 0,
+        language: item.language || ""
       }));
 
-      console.log(`%c>>> FIRING view_cart from handleCartClick (Standard Params)`, 'color: blue; font-weight: bold;', mappedItems);
-      trackClickCart('view_cart', "EUR", mappedItems);
+      // Calculate total value
+      const totalValue = mappedItems.reduce((sum, item) => sum + (item.price || 0), 0);
+
+      // Clear previous ecommerce object
+      if (typeof window !== 'undefined' && window.dataLayer) {
+        window.dataLayer.push({ ecommerce: null });
+        
+        // Push view_cart event with simplified structure
+        window.dataLayer.push({
+          event: "view_cart",
+          ecommerce: {
+            currency: "EUR",
+            value: totalValue,
+            items: mappedItems
+          }
+        });
+        
+        console.log(`%c>>> FIRING view_cart with optimized structure:`, 'color: blue; font-weight: bold;', mappedItems);
+      }
     }
     // --- END VIEW_CART TRACKING --- 
-
   }
 
   // Cart loading state - use local loading state instead of context loading

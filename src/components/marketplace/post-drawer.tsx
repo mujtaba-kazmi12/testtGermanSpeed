@@ -95,30 +95,34 @@ export function PostDrawer({ isOpen, onOpenChange, post }: PostDrawerProps) {
   // Track product detail view when drawer opens
   useEffect(() => {
     if (isOpen && post) {
-      // Format product data - keeping non-standard fields EXCEPT country
+      // Format product data for GA4 ecommerce format
       const productData = {
         item_id: post.id,
         item_name: post.siteName || post.title || "Untitled Post",
         item_category: Array.isArray(post.category) ? post.category.join(", ") : (post.category || "Uncategorized"),
         price: typeof post.price === 'string' ? parseFloat(post.price) : (post.price || 0),
-        quantity: 1, // Quantity is usually 1 for view_item
-        currency: post.currency || "EUR", // Kept non-standard param
-        domain_authority: post.domainAuthority || post.da || 0, // Kept non-standard param
-        domain_rating: post.domainRatings || post.dr || 0, // Kept non-standard param
-        monthly_traffic: post.monthlyTraffic || 0, // Kept non-standard param
-        language: post.language || "Unknown", // Kept non-standard param
-        // country: post.country || "International" // REMOVED country specifically
+        quantity: 1,
+        domain_authority: post.domainAuthority || post.da || 0,
+        domain_rating: post.domainRatings || post.dr || 0,
+        monthly_traffic: post.monthlyTraffic || 0,
+        language: post.language || ""
       };
 
-      // Push structure to dataLayer
+      // Push structure to dataLayer with optimized format
       if (typeof window !== 'undefined' && window.dataLayer) {
+        // Clear previous ecommerce object
+        window.dataLayer.push({ ecommerce: null });
+        
+        // Push view_item event with simplified structure
         window.dataLayer.push({
           event: 'view_item',
           ecommerce: {
+            currency: post.currency || "EUR",
+            value: typeof post.price === 'string' ? parseFloat(post.price) : (post.price || 0),
             items: [productData]
           }
         });
-        console.log("🔍 Product detail view tracked (without country):", productData);
+        console.log("🔍 Product detail view tracked with optimized structure:", productData);
       }
     }
   }, [isOpen, post]);
@@ -181,25 +185,27 @@ export function PostDrawer({ isOpen, onOpenChange, post }: PostDrawerProps) {
       
       // Show toast based on success status
       if (result.success) {
-        // Map item - keeping non-standard fields EXCEPT country
+        // Map item for GA4 ecommerce format
         const mappedItem = {
           item_id: post.id,
           item_name: post.siteName || post.title || "",
-          price: typeof post.price === 'string' ? parseFloat(post.price) : (post.price || 0),
           item_category: Array.isArray(post.category) ? post.category.join(", ") : (post.category || ""),
+          price: typeof post.price === 'string' ? parseFloat(post.price) : (post.price || 0),
           quantity: 1,
-          currency: post.currency || "EUR", // Kept non-standard param
-          language: post.language || "", // Kept non-standard param
-          domain_authority: post.domainAuthority || post.da || 0, // Kept non-standard param
-          domain_rating: post.domainRatings || post.dr || 0, // Kept non-standard param
-          monthly_traffic: post.monthlyTraffic !== undefined ? post.monthlyTraffic : 0, // Kept non-standard param
-          // country: post.country || "" // REMOVED country specifically
+          domain_authority: post.domainAuthority || post.da || 0,
+          domain_rating: post.domainRatings || post.dr || 0,
+          monthly_traffic: post.monthlyTraffic !== undefined ? post.monthlyTraffic : 0,
+          language: post.language || ""
         };
 
-        console.log("🔍 Add to Cart - Item Data (without country):", mappedItem);
+        console.log("🔍 Add to Cart - Item Data:", mappedItem);
 
-        // Push structure to dataLayer 
+        // Push structure to dataLayer with optimized format
         if (typeof window !== 'undefined' && window.dataLayer) {
+          // Clear previous ecommerce object
+          window.dataLayer.push({ ecommerce: null });
+          
+          // Push add_to_cart event with simplified structure
           window.dataLayer.push({
             event: 'add_to_cart',
             ecommerce: {
@@ -208,7 +214,7 @@ export function PostDrawer({ isOpen, onOpenChange, post }: PostDrawerProps) {
               items: [mappedItem]
             }
           });
-          console.log("🔍 DataLayer add_to_cart event pushed (without country in item)");
+          console.log("🔍 DataLayer add_to_cart event pushed with optimized structure");
         }
 
         toast.success(result.message || t('toast.addSuccessTitle'), {

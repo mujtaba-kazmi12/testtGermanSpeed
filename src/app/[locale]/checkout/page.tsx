@@ -758,18 +758,20 @@ function CheckoutContent() {
         item_name: item.siteName || item.title || "Untitled Product",
         item_category: Array.isArray(item.category) ? item.category.join(", ") : (item.category || "Uncategorized"),
         price: typeof item.price === 'string' ? parseFloat(item.price) : (typeof item.adjustedPrice === 'string' ? parseFloat(item.adjustedPrice) : item.price || 0),
-        currency: item.currency || "EUR",
         quantity: 1,
-        language: item.language || "",
         domain_authority: item.domainAuthority || item.da || 0,
         domain_rating: item.domainRatings || item.dr || 0,
-        monthly_traffic: item.monthlyTraffic || 0
+        monthly_traffic: item.monthlyTraffic || 0,
+        language: item.language || ""
       }));
 
       // Calculate total value
       const totalValue = mappedItems.reduce((sum, item) => sum + (item.price || 0), 0);
 
-      // Push begin_checkout event to dataLayer
+      // Clear previous ecommerce object
+      window.dataLayer.push({ ecommerce: null });
+      
+      // Push begin_checkout event to dataLayer with standardized format
       window.dataLayer.push({
         event: 'begin_checkout',
         ecommerce: {
@@ -778,7 +780,7 @@ function CheckoutContent() {
           items: mappedItems
         }
       });
-      console.log("🔍 Begin checkout event tracked in dataLayer:", mappedItems);
+      console.log("🔍 Begin checkout event tracked with optimized structure:", mappedItems);
     }
 
     setCheckoutStep(2)
