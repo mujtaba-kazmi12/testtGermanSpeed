@@ -74,6 +74,14 @@ export function CartIndicator({ className, isOpen: externalIsOpen, onOpenChange 
   const [itemsBeingDeleted, setItemsBeingDeleted] = useState<string[]>([]);
   const { trackClickCart } = useAnalytics();
   
+  // Force refresh cart on component mount to ensure cartCount is up-to-date
+  useEffect(() => {
+    if (isRegularUser) {
+      console.log("Initial cart refresh on CartIndicator mount");
+      refreshCart();
+    }
+  }, [isRegularUser, refreshCart]);
+  
   // Determine if drawer is controlled externally, by context, or internally
   const isExternallyControlled = externalIsOpen !== undefined && onOpenChange !== undefined;
   const isContextControlled = !isExternallyControlled;

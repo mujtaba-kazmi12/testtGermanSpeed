@@ -7,23 +7,45 @@ import { Search, BarChart4, Shield, Zap } from "lucide-react"
 import { Sparkles, Star } from "lucide-react"
 import { motion } from "framer-motion"
 import { useTranslations } from 'next-intl';
+import { useEffect, useState } from 'react';
 
 export function FeaturesSection() {
   const t = useTranslations('FeaturesSection');
+  // State to track if component has mounted to avoid expensive animations on initial render
+  const [hasMounted, setHasMounted] = useState(false);
+
+  useEffect(() => {
+    // Set mounted state after component mounts
+    setHasMounted(true);
+    
+    // Add preload hint for the fonts used in the heading to improve LCP
+    const linkElement = document.createElement('link');
+    linkElement.rel = 'preload';
+    linkElement.as = 'font';
+    linkElement.href = '/fonts/inter-var.woff2'; // Adjust to your actual font file
+    linkElement.type = 'font/woff2';
+    linkElement.crossOrigin = 'anonymous';
+    document.head.appendChild(linkElement);
+    
+    return () => {
+      document.head.removeChild(linkElement);
+    };
+  }, []);
 
   const container = {
     hidden: { opacity: 0 },
     show: {
       opacity: 1,
       transition: {
-        staggerChildren: 0.1,
+        staggerChildren: 0.05, // Reduced from 0.1 for faster rendering
+        delayChildren: 0.1, // Delay children animations to prioritize LCP
       },
     },
   }
 
   const item = {
-    hidden: { opacity: 0, y: 20 },
-    show: { opacity: 1, y: 0 }
+    hidden: { opacity: 0, y: 10 }, // Reduced y value for less intensive animation
+    show: { opacity: 1, y: 0, transition: { duration: 0.3 } } // Added shorter duration
   }
 
   const features = [
@@ -60,29 +82,42 @@ export function FeaturesSection() {
   return (
     <section className="w-full flex justify-center items-center py-12 md:py-24 lg:py-32 bg-[#f9f5ff]">
       <div className="container mx-auto max-w-7xl px-4 md:px-6 text-center">
-        {/* Badge & Heading */}
+        {/* Badge & Heading - Prioritize this content for LCP */}
         <div className="space-y-4 mb-12">
           <Badge className="inline-flex bg-gradient-to-r from-violet-500/20 to-fuchsia-500/20 text-violet-700 border-violet-200 hover:bg-gradient-to-r hover:from-violet-500/30 hover:to-fuchsia-500/30">
             <Sparkles className="mr-1 h-3 w-3" /> {t('badge')}
           </Badge>
-          <h1 className="text-3xl font-bold tracking-tighter sm:text-5xl xl:text-6xl glow-text">
+          
+          {/* Optimized heading with proper HTML structure for better LCP */}
+          <h1 
+            className="text-3xl font-bold tracking-tighter sm:text-5xl xl:text-6xl glow-text"
+            // Add content-visibility for better rendering performance
+            style={{ contentVisibility: 'auto', contain: 'layout' }}
+          >
             <span className="gradient-text">{t('title1')}</span> {t('title2')}
           </h1>
+          
           <p className="max-w-[700px] mx-auto text-muted-foreground md:text-xl">
             {t('description')}
           </p>
         </div>
   
-        {/* Cards Grid */}
+        {/* Cards Grid - Only animate after component has mounted */}
         <motion.div 
           className="mx-auto max-w-6xl grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8 justify-center items-center text-center"
           variants={container}
-          initial="hidden"
+          initial={hasMounted ? "hidden" : "show"} // Skip initial animation state on first render
           whileInView="show"
-          viewport={{ once: true, margin: "-50px" }}
+          viewport={{ once: true, margin: "-20px" }} // Smaller margin for earlier animation trigger
         >
           {features.map((feature, index) => (
-            <motion.div key={index} variants={item} whileHover={{ y: -5 }} transition={{ type: "spring", stiffness: 300 }}>
+            <motion.div 
+              key={index} 
+              variants={item} 
+              whileHover={{ y: -5 }} 
+              transition={{ type: "spring", stiffness: 200 }} // Reduced stiffness
+              className="will-change-transform" // Hint for browser optimization
+            >
               <Card className="h-[260px] bg-white/90 backdrop-blur-sm border border-slate-200 hover:border-slate-300 shadow-sm hover:shadow-md transition-all duration-300 overflow-hidden group w-[260px] mx-auto flex flex-col">
                 <CardHeader className="p-4 pb-2 flex-shrink-0">
                   <div className={`size-12 rounded-xl bg-gradient-to-br ${feature.gradient} p-0.5 mb-3 mx-auto group-hover:scale-105 transition-transform duration-300`}>

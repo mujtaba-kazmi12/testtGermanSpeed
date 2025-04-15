@@ -1,11 +1,13 @@
 import { memo } from 'react';
+import Image from 'next/image';
 
 type HeroImageProps = {
   className?: string;
+  priority?: boolean;
 };
 
 // Memoize the component to prevent unnecessary re-renders
-const HeroImage = memo(({ className = "" }: HeroImageProps) => {
+const HeroImage = memo(({ className = "", priority = false }: HeroImageProps) => {
   return (
     <div className={`relative w-full h-full min-h-[300px] rounded-lg overflow-hidden ${className}`}>
       <div className="absolute inset-0 bg-gradient-to-br from-purple-100 to-purple-300 z-0">
@@ -21,6 +23,10 @@ const HeroImage = memo(({ className = "" }: HeroImageProps) => {
             viewBox="0 0 400 300" 
             xmlns="http://www.w3.org/2000/svg"
             aria-hidden="true"
+            style={{ 
+              contain: 'paint',  // Optimize rendering
+              contentVisibility: 'auto' // Let browser optimize visibility
+            }}
           >
             <path
               d="M50,150 C100,50 300,250 350,150"
