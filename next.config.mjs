@@ -1,4 +1,8 @@
 import createNextIntlPlugin from 'next-intl/plugin';
+import path from 'path';
+import { fileURLToPath } from 'url';
+
+const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
 const withNextIntl = createNextIntlPlugin('./src/i18n.ts');
 
@@ -21,11 +25,10 @@ const nextConfig = {
     formats: ['image/webp', 'image/avif'],
     minimumCacheTTL: 60,
   },
-  optimizeFonts: true,
   experimental: {
-    optimizeCss: true,
+    optimizeCss: false,
     optimizePackageImports: ['lucide-react', 'framer-motion'],
-    webVitalsAttribution: ['CLS', 'LCP']
+    webVitalsAttribution: ['CLS', 'LCP'],
   },
   webpack: (config, { isServer }) => {
     if (!isServer) {
@@ -33,12 +36,21 @@ const nextConfig = {
       config.entry = async () => {
         const entries = await originalEntry();
         
-        if (entries['main.js'] && !entries['main.js'].includes('client/preload-fonts')) {
-          entries['main.js'].unshift('./client/preload-fonts.js');
-        }
-        
-        if (entries['main.js'] && !entries['main.js'].includes('client/performance-monitor')) {
-          entries['main.js'].push('./client/performance-monitor.js');
+        try {
+          if (entries['main.js']) {
+            const preloadFontsPath = path.join(__dirname, './client/preload-fonts.js');
+            const performanceMonitorPath = path.join(__dirname, './client/performance-monitor.js');
+            
+            if (!entries['main.js'].includes(preloadFontsPath)) {
+              entries['main.js'].unshift(preloadFontsPath);
+            }
+            
+            if (!entries['main.js'].includes(performanceMonitorPath)) {
+              entries['main.js'].push(performanceMonitorPath);
+            }
+          }
+        } catch (e) {
+          console.error('Error in webpack entry modification:', e);
         }
         
         return entries;
