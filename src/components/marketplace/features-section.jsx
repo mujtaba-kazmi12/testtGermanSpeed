@@ -27,33 +27,33 @@ export function FeaturesSection() {
   }
 
   const features = [
-    { 
-      icon: Search, 
-      title: t('feature1Title'), 
+    {
+      icon: Search,
+      title: t('feature1Title'),
       text: t('feature1Text'),
       gradient: "from-blue-500 to-cyan-400",
-      iconColor: "text-blue-500" 
+      iconColor: "text-blue-500"
     },
-    { 
-      icon: BarChart4, 
-      title: t('feature2Title'), 
+    {
+      icon: BarChart4,
+      title: t('feature2Title'),
       text: t('feature2Text'),
       gradient: "from-violet-500 to-purple-400",
-      iconColor: "text-violet-500" 
+      iconColor: "text-violet-500"
     },
-    { 
-      icon: Shield, 
-      title: t('feature3Title'), 
+    {
+      icon: Shield,
+      title: t('feature3Title'),
       text: t('feature3Text'),
       gradient: "from-amber-500 to-orange-400",
-      iconColor: "text-amber-500" 
+      iconColor: "text-amber-500"
     },
-    { 
-      icon: Zap, 
-      title: t('feature4Title'), 
+    {
+      icon: Zap,
+      title: t('feature4Title'),
       text: t('feature4Text'),
       gradient: "from-emerald-500 to-green-400",
-      iconColor: "text-emerald-500" 
+      iconColor: "text-emerald-500"
     },
   ]
 
@@ -72,9 +72,9 @@ export function FeaturesSection() {
             {t('description')}
           </p>
         </div>
-  
+
         {/* Cards Grid */}
-        <motion.div 
+        <motion.div
           className="mx-auto max-w-6xl grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8 justify-center items-center text-center"
           variants={container}
           initial="hidden"
@@ -103,4 +103,5 @@ export function FeaturesSection() {
     </section>
   )
 }
-  
+
+export default FeaturesSection;
