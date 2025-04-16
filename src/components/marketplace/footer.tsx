@@ -1,13 +1,48 @@
-"use client"; // Add use client directive for hooks
+"use client";
 
 import Link from "next/link"
 import { Facebook, Twitter, Instagram, Linkedin, MessageSquare } from "lucide-react"
-// Import hooks
-import { useLocale, useTranslations } from 'next-intl';
+import { useTranslations, useLocale } from 'next-intl';
+import { memo } from "react";
+
+// Memoize the footer links component for better performance
+const FooterLinks = memo(({ 
+  title, 
+  links 
+}: { 
+  title: string; 
+  links: Array<{ href: string; label: string; isLocalePrefixed?: boolean }> 
+}) => {
+  const currentLocale = useLocale();
+  
+  const localePrefixed = (path: string) => {
+    return path === "/" ? `/${currentLocale}` : `/${currentLocale}${path}`;
+  };
+  
+  return (
+    <div>
+      <h3 className="font-semibold mb-4">{title}</h3>
+      <ul className="space-y-2">
+        {links.map((link, index) => (
+          <li key={index}>
+            <Link 
+              href={link.isLocalePrefixed ? localePrefixed(link.href) : link.href} 
+              className="text-muted-foreground hover:text-violet-600 transition-colors"
+            >
+              {link.label}
+            </Link>
+          </li>
+        ))}
+      </ul>
+    </div>
+  );
+});
+
+FooterLinks.displayName = "FooterLinks";
 
 export function Footer() {
-  const currentLocale = useLocale(); // Get current locale
-  const t = useTranslations('footer'); // Initialize translations for footer namespace
+  const currentLocale = useLocale();
+  const t = useTranslations('footer');
 
   // Generate locale-prefixed links
   const localePrefixed = (path: string) => {
@@ -17,25 +52,45 @@ export function Footer() {
 
   // Get current year for copyright
   const currentYear = new Date().getFullYear();
+  
+  // Create link groups to reduce JSX complexity
+  const platformLinks = [
+    { href: "#", label: t('platformLink1') },
+    { href: "#", label: t('platformLink2') },
+    { href: "/pricing", label: t('platformLink3'), isLocalePrefixed: true },
+    { href: "#", label: t('platformLink4') }
+  ];
+  
+  const companyLinks = [
+    { href: "/about-us", label: t('about'), isLocalePrefixed: true },
+    { href: "#", label: t('companyLink2') },
+    { href: "#", label: t('companyLink3') },
+    { href: "#", label: t('companyLink4') }
+  ];
+  
+  const supportLinks = [
+    { href: "/faq", label: t('supportLink1'), isLocalePrefixed: true },
+    { href: "/contact", label: t('contact'), isLocalePrefixed: true },
+    { href: "/privacy-policy", label: t('privacy'), isLocalePrefixed: true },
+    { href: "/term-condition", label: t('terms'), isLocalePrefixed: true }
+  ];
 
   return (
     <footer className="w-full border-t bg-background">
       <div className="container mx-auto max-w-7xl px-4 md:px-6 py-12">
         <div className="grid gap-8 lg:grid-cols-5">
           <div className="lg:col-span-2">
-            {/* Use locale-prefixed link for logo */}
+            {/* Logo & description */}
             <Link href={localePrefixed("/")} className="flex items-center gap-2 mb-4">
               <div className="size-8 rounded-full bg-gradient-to-r from-violet-600 to-fuchsia-600 flex items-center justify-center">
                 <MessageSquare className="size-4 text-white" />
               </div>
-              {/* Use translated logo text */}
               <span className="font-bold text-xl">{t('logoText')}</span>
             </Link>
-            {/* Use translated description */}
             <p className="text-muted-foreground max-w-xs">
               {t('description')}
             </p>
-            {/* Social links - assuming these don't need locale prefix */}
+            {/* Social links */}
             <div className="flex gap-4 mt-4">
               <Link href="#" className="text-muted-foreground hover:text-violet-600 transition-colors">
                 <Facebook className="size-5" />
@@ -55,88 +110,16 @@ export function Footer() {
               </Link>
             </div>
           </div>
-          <div>
-            {/* Use translated titles and links */}
-            <h3 className="font-semibold mb-4">{t('platformTitle')}</h3>
-            <ul className="space-y-2">
-              <li>
-                <Link href="#" className="text-muted-foreground hover:text-violet-600 transition-colors">
-                  {t('platformLink1')}
-                </Link>
-              </li>
-              <li>
-                <Link href="#" className="text-muted-foreground hover:text-violet-600 transition-colors">
-                  {t('platformLink2')}
-                </Link>
-              </li>
-              <li>
-                <Link href={localePrefixed("/pricing")} className="text-muted-foreground hover:text-violet-600 transition-colors">
-                  {t('platformLink3')}
-                </Link>
-              </li>
-              <li>
-                <Link href="#" className="text-muted-foreground hover:text-violet-600 transition-colors">
-                  {t('platformLink4')}
-                </Link>
-              </li>
-            </ul>
-          </div>
-          <div>
-            <h3 className="font-semibold mb-4">{t('companyTitle')}</h3>
-            <ul className="space-y-2">
-              <li>
-                <Link href={localePrefixed("/about-us")} className="text-muted-foreground hover:text-violet-600 transition-colors">
-                  {t('about')}
-                </Link>
-              </li>
-              <li>
-                <Link href="#" className="text-muted-foreground hover:text-violet-600 transition-colors">
-                  {t('companyLink2')}
-                </Link>
-              </li>
-              <li>
-                <Link href="#" className="text-muted-foreground hover:text-violet-600 transition-colors">
-                  {t('companyLink3')}
-                </Link>
-              </li>
-              <li>
-                <Link href="#" className="text-muted-foreground hover:text-violet-600 transition-colors">
-                  {t('companyLink4')}
-                </Link>
-              </li>
-            </ul>
-          </div>
-          <div>
-            <h3 className="font-semibold mb-4">{t('supportTitle')}</h3>
-            <ul className="space-y-2">
-              <li>
-                <Link href={localePrefixed("/faq")} className="text-muted-foreground hover:text-violet-600 transition-colors">
-                  {t('supportLink1')}
-                </Link>
-              </li>
-              <li>
-                <Link href={localePrefixed("/contact")} className="text-muted-foreground hover:text-violet-600 transition-colors">
-                  {t('contact')}
-                </Link>
-              </li>
-              <li>
-                <Link href={localePrefixed("/privacy-policy")} className="text-muted-foreground hover:text-violet-600 transition-colors">
-                  {t('privacy')}
-                </Link>
-              </li>
-              <li>
-                <Link href={localePrefixed("/term-condition")} className="text-muted-foreground hover:text-violet-600 transition-colors">
-                  {t('terms')}
-                </Link>
-              </li>
-            </ul>
-          </div>
+          
+          {/* Use memoized link components */}
+          <FooterLinks title={t('platformTitle')} links={platformLinks} />
+          <FooterLinks title={t('companyTitle')} links={companyLinks} />
+          <FooterLinks title={t('supportTitle')} links={supportLinks} />
         </div>
+        
         <div className="mt-12 pt-8 border-t flex flex-col md:flex-row justify-between items-center gap-4">
-          {/* Use translated copyright notice with year placeholder */}
           <p className="text-sm text-muted-foreground">{t('copyright', { year: currentYear })}</p>
           <div className="flex gap-4">
-            {/* Use translated bottom links with locale prefix */}
             <Link href={localePrefixed("/contact")} className="text-sm text-muted-foreground hover:text-violet-600 transition-colors">
               {t('bottomLinkContact')}
             </Link>

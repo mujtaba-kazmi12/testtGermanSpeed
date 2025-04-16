@@ -1,16 +1,44 @@
 "use client";
 
+import React, { useCallback, memo } from "react"
 import { Button } from "@/components/ui/button"
 import { ChevronRight, ArrowRight, MessageSquare } from "lucide-react"
 import { useRouter } from "next/navigation"
 import { useLocale, useTranslations } from 'next-intl';
+
+// Memoized list item component to prevent unnecessary re-renders
+const CTAListItem = memo(({ text }: { text: string }) => (
+  <div className="flex items-center gap-2">
+    <ChevronRight className="size-4" />
+    <p>{text}</p>
+  </div>
+));
+
+CTAListItem.displayName = 'CTAListItem';
 
 export function CTASection() {
   const router = useRouter()
   const currentLocale = useLocale();
   const t = useTranslations('CTASection');
 
-  const localePrefixed = (path: string) => `/${currentLocale}${path}`;
+  const localePrefixed = useCallback((path: string) => 
+    `/${currentLocale}${path}`, [currentLocale]);
+
+  const handleSignInClick = useCallback(() => {
+    router.push(localePrefixed('/sign-in'));
+  }, [router, localePrefixed]);
+
+  const handleContactClick = useCallback(() => {
+    router.push(localePrefixed('/contact'));
+  }, [router, localePrefixed]);
+
+  // Memoize list items for better performance
+  const listItems = React.useMemo(() => [
+    t('listItem1'),
+    t('listItem2'),
+    t('listItem3'),
+    t('listItem4')
+  ], [t]);
 
   return (
     <section className="w-full py-12 md:py-24 lg:py-32 bg-cta-pattern text-white relative overflow-hidden">
@@ -32,7 +60,7 @@ export function CTASection() {
                 size="lg"
                 variant="secondary"
                 className="bg-white text-violet-700 hover:bg-gray-100 transition-all duration-300 shadow-md hover:shadow-lg inline-flex items-center gap-2"
-                onClick={() => router.push(localePrefixed('/sign-in'))}
+                onClick={handleSignInClick}
               >
                 {t('getStartedButton')} <ArrowRight className="size-4" />
               </Button>
@@ -40,7 +68,7 @@ export function CTASection() {
                 size="lg"
                 variant="outline"
                 className="bg-transparent text-white border-white hover:bg-white/10 transition-all duration-300"
-                onClick={() => router.push(localePrefixed('/contact'))}
+                onClick={handleContactClick}
               >
                 {t('contactButton')}
               </Button>
@@ -59,22 +87,9 @@ export function CTASection() {
                   </div>
                 </div>
                 <div className="grid gap-2">
-                  <div className="flex items-center gap-2">
-                    <ChevronRight className="size-4" />
-                    <p>{t('listItem1')}</p>
-                  </div>
-                  <div className="flex items-center gap-2">
-                    <ChevronRight className="size-4" />
-                    <p>{t('listItem2')}</p>
-                  </div>
-                  <div className="flex items-center gap-2">
-                    <ChevronRight className="size-4" />
-                    <p>{t('listItem3')}</p>
-                  </div>
-                  <div className="flex items-center gap-2">
-                    <ChevronRight className="size-4" />
-                    <p>{t('listItem4')}</p>
-                  </div>
+                  {listItems.map((item, index) => (
+                    <CTAListItem key={index} text={item} />
+                  ))}
                 </div>
               </div>
             </div>

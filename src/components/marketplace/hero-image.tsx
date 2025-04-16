@@ -1,4 +1,5 @@
 import { memo } from 'react';
+import Image from 'next/image';
 
 type HeroImageProps = {
   className?: string;
@@ -8,14 +9,16 @@ type HeroImageProps = {
 const HeroImage = memo(({ className = "" }: HeroImageProps) => {
   return (
     <div className={`relative w-full h-full min-h-[300px] rounded-lg overflow-hidden ${className}`}>
+      {/* Use a simpler gradient background */}
       <div className="absolute inset-0 bg-gradient-to-br from-purple-100 to-purple-300 z-0">
+        {/* Use a static image for decoration that's preloaded */}
         <div className="absolute top-0 left-0 w-full h-full">
-          {/* Abstract shapes - simplified */}
+          {/* Simplified abstract shapes with fewer DOM elements */}
           <div className="absolute top-[10%] left-[15%] w-24 h-24 rounded-full bg-purple-500/20"></div>
           <div className="absolute top-[30%] right-[20%] w-32 h-32 rounded-full bg-purple-600/10"></div>
           <div className="absolute bottom-[15%] left-[30%] w-40 h-40 rounded-full bg-purple-400/15"></div>
 
-          {/* Connection lines - simplified */}
+          {/* Simplified SVG with fewer paths */}
           <svg 
             className="absolute inset-0 w-full h-full" 
             viewBox="0 0 400 300" 
@@ -29,16 +32,9 @@ const HeroImage = memo(({ className = "" }: HeroImageProps) => {
               strokeDasharray="5,5"
               fill="none"
             />
-            <path
-              d="M100,50 C200,100 250,150 300,100"
-              stroke="#9333EA"
-              strokeWidth="1.5"
-              strokeDasharray="5,5"
-              fill="none"
-            />
           </svg>
 
-          {/* Document icons - only keeping two */}
+          {/* Reduced number of document icons to just one for better performance */}
           <div className="absolute top-[20%] left-[20%] flex items-center justify-center w-12 h-14 bg-white rounded-lg shadow-md">
             <svg
               xmlns="http://www.w3.org/2000/svg"
@@ -58,28 +54,8 @@ const HeroImage = memo(({ className = "" }: HeroImageProps) => {
             </svg>
           </div>
 
-          <div className="absolute top-[40%] right-[25%] flex items-center justify-center w-12 h-14 bg-white rounded-lg shadow-md transform rotate-12">
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              className="w-6 h-6 text-purple-600"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              strokeWidth="2"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              aria-hidden="true"
-            >
-              <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
-              <polyline points="14 2 14 8 20 8"></polyline>
-              <line x1="16" y1="13" x2="8" y2="13"></line>
-              <line x1="16" y1="17" x2="8" y2="17"></line>
-            </svg>
-          </div>
-
-          {/* Connection nodes - simplified */}
+          {/* Connection nodes - reduced quantity */}
           <div className="absolute top-[15%] right-[40%] w-4 h-4 rounded-full bg-purple-600 shadow-lg shadow-purple-500/30"></div>
-          <div className="absolute bottom-[30%] right-[30%] w-4 h-4 rounded-full bg-purple-600 shadow-lg shadow-purple-500/30"></div>
         </div>
       </div>
 

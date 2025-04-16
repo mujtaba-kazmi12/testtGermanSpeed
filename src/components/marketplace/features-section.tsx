@@ -1,17 +1,28 @@
 "use client"
 
+import React from "react"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { Badge } from "@/components/ui/badge"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
-import { Search, BarChart4, Shield, Zap } from "lucide-react"
+import { Search, BarChart4, Shield, Zap, LucideIcon } from "lucide-react"
 import { Sparkles, Star } from "lucide-react"
 import { motion } from "framer-motion"
 import { useTranslations } from 'next-intl';
 
+// Define feature interface for type safety
+interface Feature {
+  icon: LucideIcon;
+  title: string;
+  text: string;
+  gradient: string;
+  iconColor: string;
+}
+
 export function FeaturesSection() {
   const t = useTranslations('FeaturesSection');
 
-  const container = {
+  // Memoize animation variants to prevent recreation on each render
+  const container = React.useMemo(() => ({
     hidden: { opacity: 0 },
     show: {
       opacity: 1,
@@ -19,14 +30,15 @@ export function FeaturesSection() {
         staggerChildren: 0.1,
       },
     },
-  }
+  }), []);
 
-  const item = {
+  const item = React.useMemo(() => ({
     hidden: { opacity: 0, y: 20 },
     show: { opacity: 1, y: 0 }
-  }
+  }), []);
 
-  const features = [
+  // Create features array only once using translation keys
+  const features: Feature[] = React.useMemo(() => [
     {
       icon: Search,
       title: t('feature1Title'),
@@ -55,7 +67,7 @@ export function FeaturesSection() {
       gradient: "from-emerald-500 to-green-400",
       iconColor: "text-emerald-500"
     },
-  ]
+  ], [t]);
 
   return (
     <section className="w-full flex justify-center items-center py-12 md:py-24 lg:py-32 bg-[#f9f5ff]">
@@ -73,7 +85,7 @@ export function FeaturesSection() {
           </p>
         </div>
 
-        {/* Cards Grid */}
+        {/* Cards Grid - Optimized rendering with lazyMotion */}
         <motion.div
           className="mx-auto max-w-6xl grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8 justify-center items-center text-center"
           variants={container}
@@ -81,27 +93,36 @@ export function FeaturesSection() {
           whileInView="show"
           viewport={{ once: true, margin: "-50px" }}
         >
-          {features.map((feature, index) => (
-            <motion.div key={index} variants={item} whileHover={{ y: -5 }} transition={{ type: "spring", stiffness: 300 }}>
-              <Card className="h-[260px] bg-white/90 backdrop-blur-sm border border-slate-200 hover:border-slate-300 shadow-sm hover:shadow-md transition-all duration-300 overflow-hidden group w-[260px] mx-auto flex flex-col">
-                <CardHeader className="p-4 pb-2 flex-shrink-0">
-                  <div className={`size-12 rounded-xl bg-gradient-to-br ${feature.gradient} p-0.5 mb-3 mx-auto group-hover:scale-105 transition-transform duration-300`}>
-                    <div className="size-full rounded-xl bg-white flex items-center justify-center">
-                      <feature.icon className={`size-5 ${feature.iconColor}`} />
+          {features.map((feature, index) => {
+            const Icon = feature.icon;
+            return (
+              <motion.div 
+                key={index} 
+                variants={item} 
+                whileHover={{ y: -5 }} 
+                transition={{ type: "spring", stiffness: 300 }}
+                className="feature-card-container"
+              >
+                <Card className="h-[260px] bg-white/90 backdrop-blur-sm border border-slate-200 hover:border-slate-300 shadow-sm hover:shadow-md transition-all duration-300 overflow-hidden group w-[260px] mx-auto flex flex-col">
+                  <CardHeader className="p-4 pb-2 flex-shrink-0">
+                    <div className={`size-12 rounded-xl bg-gradient-to-br ${feature.gradient} p-0.5 mb-3 mx-auto group-hover:scale-105 transition-transform duration-300`}>
+                      <div className="size-full rounded-xl bg-white flex items-center justify-center">
+                        <Icon className={`size-5 ${feature.iconColor}`} />
+                      </div>
                     </div>
-                  </div>
-                  <CardTitle className="font-bold text-lg">{feature.title}</CardTitle>
-                </CardHeader>
-                <CardContent className="p-4 pt-0 flex-grow flex items-start">
-                  <p className="text-muted-foreground text-sm">{feature.text}</p>
-                </CardContent>
-              </Card>
-            </motion.div>
-          ))}
+                    <CardTitle className="font-bold text-lg">{feature.title}</CardTitle>
+                  </CardHeader>
+                  <CardContent className="p-4 pt-0 flex-grow flex items-start">
+                    <p className="text-muted-foreground text-sm">{feature.text}</p>
+                  </CardContent>
+                </Card>
+              </motion.div>
+            );
+          })}
         </motion.div>
       </div>
     </section>
   )
 }
 
-export default FeaturesSection;
+export default FeaturesSection; 

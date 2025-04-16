@@ -1,13 +1,20 @@
 "use client"
 
-import Image from "next/image"
+import React, { memo, useState, useCallback } from "react"
 import { Button } from "@/components/ui/button"
 import { ArrowRight, Sparkles } from "lucide-react"
 import { Badge } from "@/components/ui/badge"
-import HeroImage from "./hero-image"
+import dynamic from 'next/dynamic';
 import { useRouter } from "next/navigation"
 import { useLocale, useTranslations } from 'next-intl'
-import { memo } from 'react'
+
+// Dynamically import the HeroImage component to reduce initial JS bundle
+const HeroImage = dynamic(() => import('./hero-image'), {
+  ssr: true,
+  loading: () => (
+    <div className="aspect-video rounded-xl bg-gradient-to-r from-violet-100 to-fuchsia-100 animate-pulse" />
+  )
+});
 
 // Memoize the hero heading to prevent unnecessary re-renders
 const HeroHeading = memo(({ titlePart1, titlePart2 }: { titlePart1: string, titlePart2: string }) => (
@@ -28,14 +35,18 @@ export function HeroSection() {
   const currentLocale = useLocale();
   const t = useTranslations('HeroSection');
   
-  const localePrefixed = (path: string) => `/${currentLocale}${path}`;
+  // Memoize the localePrefixed function
+  const localePrefixed = useCallback((path: string) => 
+    `/${currentLocale}${path}`, [currentLocale]);
   
-  const handleBrowse = () => {
-    const element = document.getElementById('marketplace');
-    if(element) {
-      element.scrollIntoView({ behavior: 'smooth' });
-    }
-  };
+  // Memoize event handlers to prevent recreation on each render
+  const handleSignIn = useCallback(() => {
+    router.push(localePrefixed("/sign-in"));
+  }, [router, localePrefixed]);
+  
+  const handleLearnMore = useCallback(() => {
+    router.push(localePrefixed("/about-us"));
+  }, [router, localePrefixed]);
 
   return (
     <section className="w-full py-12 md:py-24 lg:py-32 bg-[rgba(247,236,251,255)] relative overflow-hidden">
@@ -59,9 +70,7 @@ export function HeroSection() {
               <Button
                 size="lg"
                 className="bg-gradient-to-r from-violet-600 to-fuchsia-600 hover:from-violet-700 hover:to-fuchsia-700 transition-all duration-300 shadow-md hover:shadow-lg hover:shadow-violet-200 inline-flex items-center gap-2"
-                onClick={() => {
-                  router.push(localePrefixed("/sign-in"));
-                }}
+                onClick={handleSignIn}
               >
                 {t('getStarted')} <ArrowRight className="size-4" />
               </Button>
@@ -69,9 +78,7 @@ export function HeroSection() {
                 size="lg"
                 variant="outline"
                 className="border-violet-300 hover:bg-violet-50 transition-all duration-300"
-                onClick={() => {
-                  router.push(localePrefixed("/about-us"));
-                }}
+                onClick={handleLearnMore}
               >
                 {t('learnMore')}
               </Button>

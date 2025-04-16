@@ -1,5 +1,6 @@
 "use client"
 
+import React, { useMemo } from "react"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { Badge } from "@/components/ui/badge"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
@@ -18,12 +19,54 @@ interface Testimonial {
   rating: number
 }
 
+// Memoized component for rendering testimonial stars
+const RatingStars = React.memo(({ rating }: { rating: number }) => (
+  <div className="flex mb-2">
+    {[...Array(5)].map((_, i) => (
+      <Star
+        key={i}
+        className={`h-4 w-4 ${i < Math.floor(rating) ? "fill-fuchsia-500 text-fuchsia-500" : "text-muted"}`}
+      />
+    ))}
+  </div>
+));
+
+RatingStars.displayName = 'RatingStars';
+
+// Memoized testimonial card component
+const TestimonialCard = React.memo(({ testimonial }: { testimonial: Testimonial }) => (
+  <Card className="h-full border-0 hover-card-effect bg-white shadow-md">
+    <CardHeader>
+      <div className="flex items-center gap-4">
+        <Avatar className="border-2 border-violet-200">
+          <AvatarImage src={testimonial.avatar} alt={testimonial.name} />
+          <AvatarFallback className="bg-gradient-to-r from-violet-600 to-fuchsia-600 text-white">
+            {testimonial.name.charAt(0)}
+          </AvatarFallback>
+        </Avatar>
+        <div>
+          <CardTitle className="text-base">{testimonial.name}</CardTitle>
+          <p className="text-sm text-muted-foreground">
+            {testimonial.role}, {testimonial.company}
+          </p>
+        </div>
+      </div>
+    </CardHeader>
+    <CardContent>
+      <RatingStars rating={testimonial.rating} />
+      <p className="text-muted-foreground">{testimonial.content}</p>
+    </CardContent>
+  </Card>
+));
+
+TestimonialCard.displayName = 'TestimonialCard';
+
 export function TestimonialsSection() {
   // Initialize translations
   const t = useTranslations('TestimonialsSection');
 
-  // Use translation keys for mock testimonials data
-  const testimonials: Testimonial[] = [
+  // Use translation keys for testimonials data with useMemo to prevent recreation
+  const testimonials: Testimonial[] = useMemo(() => [
     {
       id: 1,
       name: "Sarah Johnson",
@@ -60,7 +103,7 @@ export function TestimonialsSection() {
       content: t('testimonial4Content'),
       rating: 4.8,
     },
-  ]
+  ], [t]);
 
   return (
     <section className="w-full py-12 md:py-24 lg:py-32 bg-gradient-to-b from-violet-50/50 to-white">
@@ -84,35 +127,7 @@ export function TestimonialsSection() {
             <CarouselContent>
               {testimonials.map((testimonial) => (
                 <CarouselItem key={testimonial.id} className="md:basis-1/2 lg:basis-1/3 p-2">
-                  <Card className="h-full border-0 hover-card-effect bg-white shadow-md">
-                    <CardHeader>
-                      <div className="flex items-center gap-4">
-                        <Avatar className="border-2 border-violet-200">
-                          <AvatarImage src={testimonial.avatar} alt={testimonial.name} />
-                          <AvatarFallback className="bg-gradient-to-r from-violet-600 to-fuchsia-600 text-white">
-                            {testimonial.name.charAt(0)}
-                          </AvatarFallback>
-                        </Avatar>
-                        <div>
-                          <CardTitle className="text-base">{testimonial.name}</CardTitle>
-                          <p className="text-sm text-muted-foreground">
-                            {testimonial.role}, {testimonial.company}
-                          </p>
-                        </div>
-                      </div>
-                    </CardHeader>
-                    <CardContent>
-                      <div className="flex mb-2">
-                        {[...Array(5)].map((_, i) => (
-                          <Star
-                            key={i}
-                            className={`h-4 w-4 ${i < Math.floor(testimonial.rating) ? "fill-fuchsia-500 text-fuchsia-500" : "text-muted"}`}
-                          />
-                        ))}
-                      </div>
-                      <p className="text-muted-foreground">{testimonial.content}</p>
-                    </CardContent>
-                  </Card>
+                  <TestimonialCard testimonial={testimonial} />
                 </CarouselItem>
               ))}
             </CarouselContent>
