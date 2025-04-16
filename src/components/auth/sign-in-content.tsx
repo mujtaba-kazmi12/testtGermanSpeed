@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { MessageSquare } from "lucide-react";
 import { motion } from "framer-motion";
-
+import Image from "next/image";
 import { useTranslations } from 'next-intl';
 
 import { LoginForm } from "@/components/auth/login-form";

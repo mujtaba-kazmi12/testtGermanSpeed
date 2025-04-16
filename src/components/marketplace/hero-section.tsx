@@ -1,6 +1,6 @@
 "use client"
 
-
+import Image from "next/image"
 import { Button } from "@/components/ui/button"
 import { ArrowRight, Sparkles } from "lucide-react"
 import { Badge } from "@/components/ui/badge"
@@ -30,12 +30,12 @@ export function HeroSection() {
   
   const localePrefixed = (path: string) => `/${currentLocale}${path}`;
   
-  // const handleBrowse = () => {
-  //   const element = document.getElementById('marketplace');
-  //   if(element) {
-  //     element.scrollIntoView({ behavior: 'smooth' });
-  //   }
-  // };
+  const handleBrowse = () => {
+    const element = document.getElementById('marketplace');
+    if(element) {
+      element.scrollIntoView({ behavior: 'smooth' });
+    }
+  };
 
   return (
     <section className="w-full py-12 md:py-24 lg:py-32 bg-[rgba(247,236,251,255)] relative overflow-hidden">

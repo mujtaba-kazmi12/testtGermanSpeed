@@ -1,5 +1,5 @@
 import Cookies from "js-cookie";
-import { GetProfileResponse, UpdateProfileResponse, UpdateProfileRequestBody } from "@/types/ProfileType";
+import { GetProfileResponse,UpdateProfileResponse,UpdateProfileRequestBody } from "@/types/ProfileType";
 const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL;
 
 export const getProfile = async (
@@ -7,6 +7,7 @@ export const getProfile = async (
 ): Promise<GetProfileResponse | undefined> => {
   try {
     const token = Cookies.get("token");
+
     if (!token) {
       setError("User is not authenticated");
       return undefined;
@@ -23,7 +24,8 @@ export const getProfile = async (
 
     return await response.json();
   } catch (error) {
-    setError(error instanceof Error ? error.message : "Unexpected error occurred");
+    const err = error as Error;
+    setError(err.message || "Unexpected error occurred");
     return undefined;
   }
 };
@@ -34,6 +36,7 @@ export const updateProfile = async (
 ): Promise<UpdateProfileResponse | undefined> => {
   try {
     const token = Cookies.get("token");
+
     if (!token) {
       setError("User is not authenticated");
       return undefined;
@@ -52,8 +55,9 @@ export const updateProfile = async (
     }
 
     return await response.json();
-  } catch (error) {
-    setError(error instanceof Error ? error.message : "Unexpected error occurred");
+  }catch (error) {
+    const err = error as Error;
+    setError(err.message || "Unexpected error occurred");
     return undefined;
   }
 };
@@ -65,6 +69,7 @@ export const updatePassword = async (
   try {
     const token = Cookies.get("token");
     if (!token) {
+      console.error("No auth token found");
       return { error: "No auth token found" };
     }
     const response = await fetch(`${API_BASE_URL}/v1/auth/update-password`, {
@@ -78,11 +83,13 @@ export const updatePassword = async (
 
     if (!response.ok) {
       const errorData = await response.json();
+      console.error("Error updating password:", errorData.message);
       return { error: errorData.message };
     }
 
     return await response.json();
   } catch (error) {
+    console.error("Unexpected error occurred while updating password");
     return { error: "An unexpected error occurred." };
   }
 };

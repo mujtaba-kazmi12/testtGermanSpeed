@@ -1,5 +1,5 @@
 "use client"
-import {  Users, Target, Award, Lightbulb} from "lucide-react"
+import { ArrowLeft, Users, Target, Award, Lightbulb, Globe, ArrowRight } from "lucide-react"
 import { Card, CardContent } from "@/components/ui/card"
 import { Header } from "../marketplace/header"
 import { Footer } from "../marketplace/footer"

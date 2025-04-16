@@ -12,10 +12,9 @@ export default function ResetPassword() {
   useEffect(() => {
     const token = searchParams.get("token");
     const email = searchParams.get("email");
+
     if (token && email) {
       setParams({ token, email });
-    } else {
-      setParams(null);
     }
   }, [searchParams]);
 
@@ -40,4 +39,4 @@ export default function ResetPassword() {
       </motion.div>
     </main>
   );
-}
+} 

@@ -5,7 +5,7 @@ import { useRouter, usePathname } from "next/navigation"
 import Cookies from "js-cookie"
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet"
 import { Button } from "@/components/ui/button"
-import { Menu, MessageSquare, UserRound, Globe } from "lucide-react"
+import { Menu, MessageSquare, ShoppingCart, UserRound, Globe } from "lucide-react"
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger, DropdownMenuLabel, DropdownMenuSeparator } from "@/components/ui/dropdown-menu"
 import { CartIndicator } from "@/components/cart/CartIndicator"
 import { useLocale, useTranslations } from 'next-intl'
@@ -18,7 +18,7 @@ export function Header() {
   const currentLocale = useLocale()
   const t = useTranslations('Header')
   const [token, setToken] = useState<string | null>(null)
-  // const [menuOpen, setMenuOpen] = useState(false)
+  const [menuOpen, setMenuOpen] = useState(false)
   const [userRole, setUserRole] = useState<string | null>(null)
   const [isPending, startTransition] = useTransition()
 

@@ -842,7 +842,8 @@ export default function AllProducts() {
 // Product Table Component
 function ProductTable({
   products,
-
+  onApprove,
+  onReject,
   onDelete,
   onViewMore,
   formatCurrency,

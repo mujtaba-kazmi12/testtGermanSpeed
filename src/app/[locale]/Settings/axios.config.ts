@@ -4,7 +4,7 @@ import axios, {
     AxiosError,
   } from "axios";
   
- 
+  // Create an Axios instance
   const axiosInstance: AxiosInstance = axios.create({
   
     baseURL: "https://newbackend.crective.com/v1",

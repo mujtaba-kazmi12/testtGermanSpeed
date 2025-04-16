@@ -42,10 +42,10 @@ export interface Product {
   updateFields?: string | null
   metadata?: Record<string, any>
   email?: string
-  description?: string
-  tags?: string[] | string
-  url?: string
-  notes?: string
+  description?: string           // ✅ Add this
+  tags?: string[] | string       // ✅ Add this
+  url?: string                   // ✅ Add this
+  notes?: string                 // ✅ Add this
   comments?: string  
   user?: {
     id: string
@@ -65,8 +65,8 @@ interface ApiResponse {
   page: number
   limit: number
   total: number
-}
 
+}
 export const TableData = async (
   setError: (error: string | null) => void,
   page = 1,
@@ -81,10 +81,11 @@ export const TableData = async (
     categories?: string[]
     country?: string
     searchTerm?: string
-  } = {},
+  } = {}, // Default empty object
 ): Promise<ApiResponse | null> => {
   try {
     const token = Cookies.get("token")
+  
 
     const params = new URLSearchParams({
       page: page.toString(),
@@ -92,18 +93,21 @@ export const TableData = async (
       country: "Germany",
     })
 
-    if (filters.minPrice) params.append("minPrice", filters.minPrice)
-    if (filters.maxPrice) params.append("maxPrice", filters.maxPrice)
+    // Add filters if available
+    if (filters.minPrice) params.append("minPrice", filters.minPrice);
+    if (filters.maxPrice) params.append("maxPrice", filters.maxPrice);
     if (filters.minDA) params.append("minDA", filters.minDA)
     if (filters.maxDA) params.append("maxDA", filters.maxDA)
     if (filters.minDR) params.append("minDR", filters.minDR)
     if (filters.maxDR) params.append("maxDR", filters.maxDR)
     if (filters.searchTerm) params.append("search", filters.searchTerm)
+
     filters.categories?.forEach((category) => {
       params.append("category", category)
     })
 
     const fullUrl = `${API_BASE_URL}/v1/get/products?${params.toString()}`
+    
 
     const headers = {
       "Content-Type": "application/json",
@@ -112,8 +116,20 @@ export const TableData = async (
 
     const response = await fetch(fullUrl, {
       method: "GET",
-      headers,
+      headers: headers,
     })
+
+
+
+    try {
+      const responseHeaders: Record<string, string> = {}
+      response.headers.forEach((value, key) => {
+        responseHeaders[key] = value
+      })
+     
+    } catch (err) {
+
+    }
 
     const responseText = await response.text()
 
@@ -121,13 +137,17 @@ export const TableData = async (
       throw new Error(`HTTP error! Status: ${response.status}`)
     }
 
+    // Try to parse the response as JSON
     try {
       const data = JSON.parse(responseText)
+
       return data
-    } catch {
+    } catch (err) {
+
       throw new Error("Invalid JSON response from server")
     }
   } catch (error) {
+
     setError(`Failed to fetch products: ${error instanceof Error ? error.message : "Unknown error"}`)
     return null
   }

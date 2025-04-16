@@ -1,19 +1,12 @@
 "use client"
 
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { Badge } from "@/components/ui/badge"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Search, BarChart4, Shield, Zap } from "lucide-react"
-import { Sparkles } from "lucide-react"
+import { Sparkles, Star } from "lucide-react"
 import { motion } from "framer-motion"
 import { useTranslations } from 'next-intl';
-import dynamic from 'next/dynamic';
-
-const FeaturesSection = dynamic(() => import('./features-section'), {
-  ssr: false,
-  loading: () => <p>Loading...</p>,
-});
-
-export default FeaturesSection;
 
 export function FeaturesSection() {
   const t = useTranslations('FeaturesSection');

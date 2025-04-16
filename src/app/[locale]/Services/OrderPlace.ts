@@ -3,9 +3,9 @@ import axiosInstance from "../Settings/axios.config";
 import { CheckOutApiResponse } from "@/types/checkout";
 import { CountriesApiResponse, CountryCodesApiResponse, UpdateUserInfoRequest, UserInfoResponse } from "@/types/User";
 import Cookies from "js-cookie";
+import axios from "axios";
 const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL;
 import countriesData from "../../../datas/countriesCity.json";
-
 export const OrderPlace = async (
   setError: (error: string) => void, 
   token: string, 
@@ -19,7 +19,7 @@ export const OrderPlace = async (
   totalAmount: number
 ): Promise<AxiosResponse<CheckOutApiResponse> | undefined> => {
   try {
-    const endpoint = `${API_BASE_URL}/orders/place-order`;
+    const endpoint = `${API_BASE_URL}/orders/place-order`; // Using environment variable for base URL
 
     const requestData = {
       Topic: topic,
@@ -29,6 +29,8 @@ export const OrderPlace = async (
       wordLimit,
       totalAmount,
       productId,
+
+      
     };
 
     const response: AxiosResponse<CheckOutApiResponse> = await axiosInstance.post(
@@ -54,11 +56,13 @@ export const OrderPlace = async (
 export const getUserInfo = async (
   setError: (error: string) => void
 ): Promise<AxiosResponse<UserInfoResponse> | undefined> => {
-  const token = Cookies.get("token");
+
+  const token = Cookies.get("token"); // Get token from cookies
   if (!token) {
     setError("Authentication token not found");
     return undefined;
   }
+
   try {
     const response: AxiosResponse<UserInfoResponse> = await axiosInstance.get(
       `${API_BASE_URL}/v1/auth/get-profile`,
@@ -79,6 +83,7 @@ export const getUserInfo = async (
   }
 };
 
+// Function to update user information
 export const updateUserInfo = async (
   setError: (error: string) => void,
   token: string,
@@ -86,7 +91,8 @@ export const updateUserInfo = async (
 ): Promise<AxiosResponse<UserInfoResponse> | undefined> => {
   try {
     const response: AxiosResponse<UserInfoResponse> = await axiosInstance.put(
-      `${API_BASE_URL}/v1/order/updateProfile`, 
+      `${API_BASE_URL}/v1/order/updateProfile
+`, 
       userData, 
       {
         headers: {
@@ -104,18 +110,19 @@ export const updateUserInfo = async (
     return undefined;
   }
 };
-
-
+// Load local JSON data instead of calling the API
 export const fetchCountriesAndCities = async (
   setError: (error: string) => void
 ): Promise<{ data: CountriesApiResponse } | undefined> => {
   try {
+    console.log("Loaded countries and cities from local JSON:", countriesData); // 👈 Console log
     return { data: countriesData };
   } catch (error) {
     setError("Failed to load countries and cities from local JSON");
     return undefined;
   }
 };
+
 
 export const fetchCountryCodes = async (
   setError: (error: string) => void

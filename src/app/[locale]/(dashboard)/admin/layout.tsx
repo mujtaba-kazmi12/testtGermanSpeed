@@ -8,6 +8,8 @@ import {
   SidebarTrigger,
 } from "@/components/ui/sidebar"
 import { usePathname } from "next/navigation"
+import Link from "next/link"
+import { Home } from "lucide-react"
 
 export default function AdminDashboardLayout({
   children,
@@ -15,7 +17,7 @@ export default function AdminDashboardLayout({
   children: React.ReactNode
 }>) {
   const pathname = usePathname()
-
+  
   // Determine active item based on the current path
   const getActiveItemFromPath = (path: string) => {
     if (path.includes("/admin/dashboard")) return "dashboard"
@@ -24,9 +26,9 @@ export default function AdminDashboardLayout({
     if (path.includes("/admin/orders")) return "orders"
     if (path.includes("/admin/moderator")) return "moderator"
     if (path.includes("/admin/withdraw-requests")) return "withdrawRequests"
-    return "dashboard"
+    return "dashboard" // Default to dashboard
   }
-
+  
   const activeItem = getActiveItemFromPath(pathname)
 
   return (
@@ -49,4 +51,4 @@ export default function AdminDashboardLayout({
       </SidebarInset>
     </SidebarProvider>
   )
-}
+} 

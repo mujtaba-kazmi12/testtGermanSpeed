@@ -1,14 +1,16 @@
+import Cookies from "js-cookie";
 import axios, { AxiosResponse, isAxiosError } from "axios";
 import axiosInstance from "../Settings/axios.config";
 import { ClientContentApiResponse } from "@/types/ClientContentType";
 
+const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL;
 export const checkPaymentStatus = async (
   uuid: string,
   orderId: string,
   setError: (error: string) => void
 ): Promise<AxiosResponse<any> | undefined> => {
   try {
-    const response = await axios.get(
+    const response: AxiosResponse<any> = await axios.get(
       `https://backend.crective.com/payscrap/check_payment_status?uuid=${uuid}&order_id=${orderId}`,
       {
         headers: {
@@ -20,7 +22,7 @@ export const checkPaymentStatus = async (
   } catch (error) {
     if (isAxiosError(error) && error.response) {
       setError(error.response.statusText);
-      return error.response;
+      return error.response as AxiosResponse<any>;
     }
     setError("Unexpected error occurred");
     return undefined;
@@ -31,7 +33,7 @@ export const fetchPaymentServices = async (
   setError: (error: string) => void
 ): Promise<AxiosResponse<any> | undefined> => {
   try {
-    const response = await axios.get(
+    const response: AxiosResponse<any> = await axios.get(
       "https://backend.crective.com/payscrap/services",
       {
         headers: {
@@ -43,13 +45,12 @@ export const fetchPaymentServices = async (
   } catch (error) {
     if (isAxiosError(error) && error.response) {
       setError(error.response.statusText);
-      return error.response;
+      return error.response as AxiosResponse<any>;
     }
     setError("Unexpected error occurred");
     return undefined;
   }
 };
-
 export const handleClientOrderRequest = async (
   setError: (error: string) => void,
   token: string,
@@ -70,20 +71,17 @@ export const handleClientOrderRequest = async (
   }
 ): Promise<AxiosResponse<ClientContentApiResponse> | undefined> => {
   try {
-    const response = await axiosInstance.post<ClientContentApiResponse>(
-      "/order",
-      requestData,
-      {
+    const response: AxiosResponse<ClientContentApiResponse> =
+      await axiosInstance.post("/order", requestData, {
         headers: {
           Authorization: `Bearer ${token}`,
         },
-      }
-    );
+      });
     return response;
   } catch (error) {
     if (isAxiosError(error) && error.response) {
       setError(error.response.statusText);
-      return error.response;
+      return error.response as AxiosResponse<ClientContentApiResponse>;
     }
     setError("Unexpected error occurred");
     return undefined;

@@ -10,6 +10,8 @@ import {
 import { usePathname } from "next/navigation"
 import { NotificationIcon } from "@/components/dashboard/notifications/notification-icon"
 import { NotificationModal } from "@/components/dashboard/notifications/notifications-modal"
+import Link from "next/link"
+import { Home } from "lucide-react"
 
 export default function PublisherDashboardLayout({
   children,
@@ -26,7 +28,7 @@ export default function PublisherDashboardLayout({
     if (path.includes("/publisher/orders")) return "Orders"
     if (path.includes("/publisher/withdraw")) return "withdraw"
     if (path.includes("/publisher/profile")) return "profile"
-    return "dashboard"
+    return "dashboard" // Default to dashboard
   }
   
   const activeItem = getActiveItemFromPath(pathname)
@@ -44,13 +46,17 @@ export default function PublisherDashboardLayout({
             <Separator orientation="vertical" className="mr-2 h-5 bg-slate-200" />
             <h1 className="text-sm font-medium bg-clip-text text-transparent bg-gradient-to-r from-violet-600 to-fuchsia-600">Publisher Dashboard</h1>
           </div>
-          <NotificationIcon />
+          <div>
+            <NotificationIcon />
+          </div>
         </header>
         <div className="p-6 bg-slate-50 min-h-[calc(100vh-4rem)]">
           {children}
         </div>
       </SidebarInset>
+
+      {/* Add the notification modal here */}
       <NotificationModal />
     </SidebarProvider>
   )
-}
+} 

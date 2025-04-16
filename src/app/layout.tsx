@@ -1,5 +1,5 @@
 import "./globals.css";
-import type { Metadata, Viewport } from "next";
+import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import { Providers } from "@/components/providers/providers";
 import clsx from "clsx";
@@ -13,22 +13,16 @@ const inter = Inter({
   adjustFontFallback: true,
 });
 
-
 export const metadata: Metadata = {
   title: "GermanGuestPost - Content Marketplace",
   description: "Find and buy high-quality content services for your website",
-  
- 
-};
-
-
-export function generateViewport(): Viewport {
-  return {
+  // Add viewport metadata for optimization
+  viewport: {
     width: 'device-width',
     initialScale: 1,
     maximumScale: 5,
-  };
-}
+  },
+};
 
 export default function RootLayout({
   children,
@@ -61,3 +55,4 @@ export default function RootLayout({
     </html>
   );
 }
+
