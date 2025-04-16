@@ -1,9 +1,9 @@
 "use client"
 
 import Link from "next/link"
-import { ArrowLeft, FileText, Shield, BookOpen, Copyright, AlertTriangle, Scale, Mail } from "lucide-react"
+import {  FileText, Shield, BookOpen, Copyright, AlertTriangle, Scale, Mail } from "lucide-react"
 
-import { Button } from "@/components/ui/button"
+
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Footer } from "../marketplace/footer"
 import { Header } from "../marketplace/header"

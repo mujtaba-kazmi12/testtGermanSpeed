@@ -1,6 +1,7 @@
 import { AxiosResponse, isAxiosError } from "axios";
 import axiosInstance from "../Settings/axios.config";
 import { CheckOutApiResponse } from "@/types/checkout";
+
 export const handleOrderRequest = async (
   setError: (error: string) => void,
   token: string,
@@ -14,16 +15,16 @@ export const handleOrderRequest = async (
     email: string;
     anchorLink: string;
     anchor: string;
-    wordLimit: string; // Changed from `string` to `number` as per `wordLimitAsNumber`
+    wordLimit: string;
     network: string;
     to_currency: string;
     products: { productId: string }[];
   }
 ): Promise<AxiosResponse<CheckOutApiResponse> | undefined> => {
   try {
-    const response: AxiosResponse<CheckOutApiResponse> = await axiosInstance.post(
+    const response = await axiosInstance.post<CheckOutApiResponse>(
       "/order/conten-provider",
-      requestData, // ✅ Object directly pass karna
+      requestData,
       {
         headers: {
           Authorization: `Bearer ${token}`,
@@ -34,7 +35,7 @@ export const handleOrderRequest = async (
   } catch (error) {
     if (isAxiosError(error) && error.response) {
       setError(error.response.statusText);
-      return error.response as AxiosResponse<CheckOutApiResponse>;
+      return error.response;
     }
     setError("Unexpected error occurred");
     return undefined;

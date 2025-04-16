@@ -1,15 +1,14 @@
 "use client"
 
 import { useState } from "react"
-import Link from "next/link"
+
 import {
-  ArrowLeft,
+
   Search,
   Plus,
   Minus,
   HelpCircle,
-  Mail,
-  MessageSquare,
+  
   FileText,
   Settings,
   Users,
@@ -17,7 +16,7 @@ import {
 } from "lucide-react"
 
 import { Button } from "@/components/ui/button"
-import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card"
+import { Card, CardContent } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
 import { Header } from "../marketplace/header"
 import { Footer } from "../marketplace/footer"

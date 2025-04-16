@@ -1,7 +1,6 @@
 "use client";
 
 import { ForgetPasswordContent } from "@/components/auth/forget-password-context";
-import { ForgotPasswordForm } from "@/components/auth/forgot-password-form";
 import { motion } from "framer-motion";
 
 export default function ForgotPassword() {

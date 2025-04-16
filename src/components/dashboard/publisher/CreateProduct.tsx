@@ -6,7 +6,7 @@ import { Check, ChevronsUpDown, Copy, CheckCircle } from "lucide-react"
 import { cn } from "@/lib/utils"
 import { createProduct, submitPostingLink } from "@/lib/publisher"
 import { postCategories } from "@/lib/data/categories"
-import type { CreateProductPayload, ProductFormData } from "@/types/publisher"
+import type {  ProductFormData } from "@/types/publisher"
 
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
@@ -24,13 +24,13 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog"
 import { Badge } from "@/components/ui/badge"
-import { useToast } from "@/components/ui/use-toast"
-import { useRouter } from "next/navigation"
+
+
 import { Toast } from "@/components/toast/Toast"
 
 export default function CreateProduct() {
-  const { toast } = useToast()
-  const router = useRouter()
+
+  // const router = useRouter()
   const [siteTypes, setSiteTypes] = useState<string[]>([])
   const [selectedCategories, setSelectedCategories] = useState<string[]>([])
   const [openCategorySelector, setOpenCategorySelector] = useState(false)
@@ -211,40 +211,6 @@ export default function CreateProduct() {
     }
   }
 
-  // const handleConfirmPostedLink = async () => {
-  //   if (!postedLink) {
-  //     Toast.showError("Please paste the posted link")
-  //     return
-  //   }
-
-  //   if (!productId) {
-  //     Toast.showError("Product ID is missing. Please try again.")
-  //     return
-  //   }
-
-  //   setIsSubmittingLink(true)
-
-  //   try {
-  //     console.log("Submitting posting link for product ID:", productId)
-
-  //     const result = await submitPostingLink(productId, postedLink)
-  //     console.log("API response result:", result)
-
-  //     setShowConfirmModal(false)
-  //     Toast.showSuccess("Post submitted successfully")
-
-  //     setTimeout(() => {
-  //       // router.push("/publisher/products");
-  //     }, 10)
-  //   } catch (error: any) {
-  //     console.error("Error submitting posting link:", error)
-
-  //     const errorMessage = error.response?.data?.message || "Failed to submit posting link. Please try again."
-  //     Toast.showError(errorMessage)
-  //   } finally {
-  //     setIsSubmittingLink(false)
-  //   }
-  // }
   const handleConfirmPostedLink = async () => {
     if (!postedLink) {
       Toast.showError("Please paste the posted link")

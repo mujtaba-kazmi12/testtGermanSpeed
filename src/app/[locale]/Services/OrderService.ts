@@ -7,12 +7,11 @@ const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL;
 
 export const OrderData = async (
   setError: (error: string) => void,
-  page: number,  // Page parameter
-  limit: number  // Limit parameter
+  page: number,
+  limit: number
 ): Promise<AxiosResponse<OrdersApiResponse> | undefined> => {
   try {
-    const token = Cookies.get("token"); // Get token from cookies
-
+    const token = Cookies.get("token");
     if (!token) {
       setError("User is not authenticated");
       return undefined;
@@ -25,7 +24,7 @@ export const OrderData = async (
           Authorization: `Bearer ${token}`,
         },
         params: {
-          page,  // Query parameters
+          page,
           limit,
         },
       }

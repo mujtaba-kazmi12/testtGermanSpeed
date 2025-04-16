@@ -8,8 +8,6 @@ import {
   SidebarTrigger,
 } from "@/components/ui/sidebar"
 import { usePathname } from "next/navigation"
-import Link from "next/link"
-import { Home } from "lucide-react"
 
 export default function ModeratorDashboardLayout({
   children,
@@ -26,7 +24,7 @@ export default function ModeratorDashboardLayout({
     if (path.includes("/moderator/add-site")) return "website"
     if (path.includes("/moderator/orders")) return "orders"
     if (path.includes("/moderator/withdraw-requests")) return "withdrawRequests"
-    return "dashboard" // Default to dashboard
+    return "dashboard"
   }
   
   const activeItem = getActiveItemFromPath(pathname)
@@ -51,4 +49,4 @@ export default function ModeratorDashboardLayout({
       </SidebarInset>
     </SidebarProvider>
   )
-} 
+}

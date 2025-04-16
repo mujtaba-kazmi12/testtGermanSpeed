@@ -4,19 +4,7 @@ import { useCallback } from 'react';
 import { ANALYTICS_CONFIG } from '@/lib/analytics-config';
 import { useCart } from '@/context/CartContext';
 
-// Define types for cart items
-interface CartItem {
-  item_currency: string;
-  item_name: string;
-  item_id: string;
-  price: number;
-  quantity: number;
-  item_category?: string;
-  language?: string;
-  traffic?: string;
-  domain_authority?: number;
-  domain_rating?: number;
-}
+
 
 // Define standard GA4 item type (can be refined further)
 interface GA4Item {
@@ -32,27 +20,7 @@ export function useAnalytics() {
   const { GA4_MEASUREMENT_ID } = ANALYTICS_CONFIG;
   const { cartItems } = useCart();
 
-  const trackPageView = useCallback(
-    (url: string, title?: string) => {
-      /* // Commented out to avoid duplicate GA4 pageview tracking with GoogleAnalytics.tsx
-      // ... gtag config code ...
-      */
 
-      // Push page view to dataLayer for GTM
-      /* // Removed dataLayer push as GTM is removed
-      if (typeof window !== 'undefined' && window.dataLayer) {
-        window.dataLayer.push({
-          event: 'page_view',
-          page_path: url,
-          page_title: title,
-        });
-      }
-      */
-    },
-    [GA4_MEASUREMENT_ID]
-  );
-
-  // Add trackClick function for navigation events
   const trackClick = useCallback(
     (category: string, label: string, action: string = 'click') => {
       // Re-enabled direct gtag call
@@ -68,19 +36,30 @@ export function useAnalytics() {
       }
       
 
-      // Push click event to dataLayer for GTM
-      /* // Removed dataLayer push as GTM is removed
-      if (typeof window !== 'undefined' && window.dataLayer) {
-        window.dataLayer.push({
-          event: action,
-          event_category: category,
-          event_label: label,
-        });
-      }
-      */
+  
 
       // Log for debugging purposes
       console.log(`Analytics: ${action} - ${category} - ${label}`);
+    },
+    [GA4_MEASUREMENT_ID]
+  );
+
+  // Add trackPageView function for page view events
+  const trackPageView = useCallback(
+    (url: string) => {
+      if (
+        typeof window !== 'undefined' &&
+        window.gtag &&
+        GA4_MEASUREMENT_ID
+      ) {
+        window.gtag('event', 'page_view', {
+          page_location: url,
+          page_title: document.title,
+        });
+      }
+      
+      // Log for debugging purposes
+      console.log(`Analytics Page View: ${url}`);
     },
     [GA4_MEASUREMENT_ID]
   );

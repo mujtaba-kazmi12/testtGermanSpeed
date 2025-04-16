@@ -5,7 +5,6 @@ import {
   AudioWaveform,
   Command,
   MessageSquare,
-  Settings2,
   Users,
   ShoppingCart,
   LayoutDashboard,
@@ -14,10 +13,6 @@ import {
   Package,
   BarChart,
   Upload,
-  ListChecks,
-  FileCheck,
-  HelpCircle,
-  Building2,
   ShieldCheck,
   Banknote,
 } from "lucide-react"

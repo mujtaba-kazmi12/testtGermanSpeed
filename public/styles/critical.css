@@ -1,85 +1,4 @@
-/* Critical CSS for above-the-fold content - improves LCP */
-
-/* Typography for headings - focus on the h1 title that is the LCP */
-h1.glow-text {
-  font-size: 2.25rem;
-  font-weight: 700;
-  line-height: 1.2;
-  letter-spacing: -0.025em;
-  color: rgb(17, 24, 39);
-  text-rendering: optimizeLegibility;
-  -webkit-font-smoothing: antialiased;
-}
-
-@media (min-width: 640px) {
-  h1.glow-text {
-    font-size: 3rem;
-  }
-}
-
-@media (min-width: 1280px) {
-  h1.glow-text {
-    font-size: 3.75rem;
-  }
-}
-
-/* The gradient text */
-.gradient-text {
-  background: linear-gradient(to right, rgb(124, 58, 237), rgb(219, 39, 119));
-  background-clip: text;
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  display: inline;
-}
-
-/* Badge styles important for the hero section */
-.inline-flex {
-  display: inline-flex;
-}
-
-/* Basic layout and positioning for above the fold content */
-section {
-  width: 100%;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  padding-top: 3rem;
-  padding-bottom: 3rem;
-}
-
-@media (min-width: 768px) {
-  section {
-    padding-top: 6rem;
-    padding-bottom: 6rem;
-  }
-}
-
-@media (min-width: 1024px) {
-  section {
-    padding-top: 8rem;
-    padding-bottom: 8rem;
-  }
-}
-
-.container {
-  margin-left: auto;
-  margin-right: auto;
-  padding-left: 1rem;
-  padding-right: 1rem;
-  text-align: center;
-}
-
-@media (min-width: 768px) {
-  .container {
-    padding-left: 1.5rem;
-    padding-right: 1.5rem;
-  }
-}
-
-/* Optimize loading performance with content-visibility */
-h1, h2, h3, h4, h5, h6 {
-  content-visibility: auto;
-}
+/* Critical CSS for above-the-fold content */
 
 /* Basic resets */
 * {
@@ -137,6 +56,17 @@ h1, h2, h3, h4, h5, h6 {
   position: relative;
 }
 
+.container {
+  width: 100%;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.mx-auto {
+  margin-left: auto;
+  margin-right: auto;
+}
+
 .max-w-7xl {
   max-width: 80rem;
 }
@@ -179,6 +109,11 @@ h1, h2, h3, h4, h5, h6 {
   background-color: rgba(247, 236, 251, 255);
 }
 
+/* Badge styles */
+.inline-flex {
+  display: inline-flex;
+}
+
 /* Button styles */
 .shadow-md {
   --tw-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
@@ -187,6 +122,13 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 /* Media queries for responsive text */
+@media (min-width: 640px) {
+  .sm\:text-5xl {
+    font-size: 3rem;
+    line-height: 1;
+  }
+}
+
 @media (min-width: 1280px) {
   .xl\:text-6xl\/none {
     font-size: 3.75rem;
@@ -195,6 +137,11 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 @media (min-width: 768px) {
+  .md\:py-24 {
+    padding-top: 6rem;
+    padding-bottom: 6rem;
+  }
+  
   .md\:px-6 {
     padding-left: 1.5rem;
     padding-right: 1.5rem;
@@ -207,6 +154,11 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 @media (min-width: 1024px) {
+  .lg\:py-32 {
+    padding-top: 8rem;
+    padding-bottom: 8rem;
+  }
+  
   .lg\:grid-cols-2 {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }

@@ -61,13 +61,7 @@ export function CartProvider({ children }: { children: ReactNode }) {
           
           if (userCart && userCart.products && userCart.products.length > 0) {
             console.log("Found user cart with products:", userCart.products.length);
-            // Ensure we're setting the complete product objects
-            const productsWithCompleteData = userCart.products.map((product: any) => ({
-              ...product,
-              id: product.id || product.productId // Ensure id is always set
-            }));
-            setCartItems(productsWithCompleteData);
-            console.log("Cart items updated:", productsWithCompleteData.length);
+            setCartItems(userCart.products);
           } else {
             console.log("No products found in user cart");
             setCartItems([]);
@@ -76,22 +70,12 @@ export function CartProvider({ children }: { children: ReactNode }) {
         // If data.items exists, use it directly (original implementation)
         else if (response.data.items) {
           console.log("Using cart items directly from response");
-          const itemsWithIds = response.data.items.map((item: any) => ({
-            ...item,
-            id: item.id || item.productId // Ensure id is always set
-          }));
-          setCartItems(itemsWithIds);
-          console.log("Cart items updated:", itemsWithIds.length);
+          setCartItems(response.data.items);
         }
         // Check if products array exists directly on data
         else if (response.data.products) {
           console.log("Using products array from response");
-          const productsWithIds = response.data.products.map((product: any) => ({
-            ...product,
-            id: product.id || product.productId // Ensure id is always set
-          }));
-          setCartItems(productsWithIds);
-          console.log("Cart items updated:", productsWithIds.length);
+          setCartItems(response.data.products);
         } else {
           console.log("No recognizable cart data structure found");
           setCartItems([]);
@@ -103,8 +87,6 @@ export function CartProvider({ children }: { children: ReactNode }) {
     } catch (err) {
       console.error("Error fetching cart:", err);
       setError("Failed to load cart data");
-      // Don't clear cart items on network errors to prevent flickering
-      // Only clear if we explicitly know the cart is empty
     } finally {
       setLoading(false);
     }

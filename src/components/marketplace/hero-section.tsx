@@ -1,23 +1,18 @@
 "use client"
 
-import Image from "next/image"
+
 import { Button } from "@/components/ui/button"
 import { ArrowRight, Sparkles } from "lucide-react"
 import { Badge } from "@/components/ui/badge"
 import HeroImage from "./hero-image"
 import { useRouter } from "next/navigation"
 import { useLocale, useTranslations } from 'next-intl'
-import { memo, useEffect, useState } from 'react'
+import { memo } from 'react'
 
 // Memoize the hero heading to prevent unnecessary re-renders
 const HeroHeading = memo(({ titlePart1, titlePart2 }: { titlePart1: string, titlePart2: string }) => (
   <h1 
     className="text-3xl font-bold tracking-tighter sm:text-5xl xl:text-6xl/none"
-    style={{ 
-      contentVisibility: "auto", 
-      contain: "layout",
-      textRendering: "optimizeLegibility"
-    }}
   >
     <span className="bg-clip-text text-transparent bg-gradient-to-r from-violet-600 to-fuchsia-600">
       {titlePart1}
@@ -32,29 +27,15 @@ export function HeroSection() {
   const router = useRouter();
   const currentLocale = useLocale();
   const t = useTranslations('HeroSection');
-  // Avoid expensive animations on first render
-  const [isClient, setIsClient] = useState(false);
-  
-  // Set client state after mount to trigger animations only after hydration
-  useEffect(() => {
-    setIsClient(true);
-    
-    // Add a hint to the browser that this content is important
-    const mainHeading = document.querySelector('h1');
-    if (mainHeading) {
-      // Tell the browser this is high priority content
-      mainHeading.setAttribute('fetchpriority', 'high');
-    }
-  }, []);
   
   const localePrefixed = (path: string) => `/${currentLocale}${path}`;
   
-  const handleBrowse = () => {
-    const element = document.getElementById('marketplace');
-    if(element) {
-      element.scrollIntoView({ behavior: 'smooth' });
-    }
-  };
+  // const handleBrowse = () => {
+  //   const element = document.getElementById('marketplace');
+  //   if(element) {
+  //     element.scrollIntoView({ behavior: 'smooth' });
+  //   }
+  // };
 
   return (
     <section className="w-full py-12 md:py-24 lg:py-32 bg-[rgba(247,236,251,255)] relative overflow-hidden">
@@ -67,7 +48,7 @@ export function HeroSection() {
                 <Sparkles className="mr-1 h-3 w-3" /> {t('badge')}
               </Badge>
               
-              {/* Optimized hero heading with priority hint */}
+              {/* Optimized hero heading */}
               <HeroHeading titlePart1={t('title1')} titlePart2={t('title2')} />
               
               <p className="max-w-[600px] text-muted-foreground md:text-xl">
@@ -97,12 +78,8 @@ export function HeroSection() {
             </div>
           </div>
           <div className="mx-auto w-full max-w-[500px] lg:max-w-none">
-            <div 
-              className={`aspect-video overflow-hidden rounded-xl shadow-xl shadow-violet-200/50 ${isClient ? 'animate-float' : ''}`}
-              // Apply hardware acceleration for smoother rendering
-              style={{ transform: 'translateZ(0)' }}
-            >
-              <HeroImage priority={true} />
+            <div className="aspect-video overflow-hidden rounded-xl shadow-xl shadow-violet-200/50 animate-float">
+              <HeroImage />
             </div>
           </div>
         </div>

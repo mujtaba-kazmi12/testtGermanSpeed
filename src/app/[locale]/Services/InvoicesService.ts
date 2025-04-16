@@ -12,17 +12,17 @@ export const getInvoices = async (
   searchQuery: string = ""
 ): Promise<GetInvoicesResponse | undefined> => {
   try {
-    const token = Cookies.get("token"); // Get token from cookies
+    const token = Cookies.get("token"); 
 
     if (!token) {
       setError("User is not authenticated");
       return undefined;
     }
 
-    // ✅ Construct API URL based on search query
+    
     let apiUrl = `${API_BASE_URL}/v1/orderInvocie?page=${page}&limit=${limit}`;
     if (searchQuery) {
-      apiUrl += `&q=${searchQuery}`;
+      apiUrl += `&q=${encodeURIComponent(searchQuery)}`;
     }
 
     const response: AxiosResponse<GetInvoicesResponse> = await axiosInstance.get(apiUrl, {
@@ -31,7 +31,7 @@ export const getInvoices = async (
       },
     });
 
-    return response.data; // ✅ Extracting invoices array
+    return response.data; 
 
   } catch (error) {
     if (isAxiosError(error) && error.response) {

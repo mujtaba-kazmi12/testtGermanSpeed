@@ -17,21 +17,13 @@ interface FloatingCartButtonProps {
 
 export function FloatingCartButton({ className }: FloatingCartButtonProps) {
   const t = useTranslations("cart");
-  const { cartCount, isCartOpen, setIsCartOpen, cartItems, refreshCart } = useCart();
+  const { cartCount, isCartOpen, setIsCartOpen, cartItems } = useCart();
   const { trackClick, trackClickCart } = useAnalytics();
   const isLoggedIn = !!Cookies.get("token");
   const userRole = Cookies.get("role");
   const isRegularUser = isLoggedIn && userRole === "user";
   const prevCartCount = useRef(cartCount);
   const [shouldBounce, setShouldBounce] = useState(false);
-
-  // Force refresh cart on component mount to ensure cartCount is up-to-date
-  useEffect(() => {
-    if (isRegularUser) {
-      console.log("Initial cart refresh on FloatingCartButton mount");
-      refreshCart();
-    }
-  }, [isRegularUser, refreshCart]);
 
   // Detect cart count changes to trigger bounce
   useEffect(() => {

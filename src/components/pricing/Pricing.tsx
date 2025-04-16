@@ -2,7 +2,7 @@
 
 import { useState } from "react"
 import Link from "next/link"
-import { ArrowLeft, Check, HelpCircle, Star, Shield, Zap, ArrowRight, X } from "lucide-react"
+import {  Check,  Star, Shield, Zap, ArrowRight, X } from "lucide-react"
 
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle, CardDescription, CardFooter } from "@/components/ui/card"
@@ -15,7 +15,7 @@ export default function Pricing() {
   const t = useTranslations('PricingPage');
   const currentLocale = useLocale();
 
-  const appName = "German Guest Post"
+  // const appName = "German Guest Post"
 
   const [billingPeriod, setBillingPeriod] = useState<"monthly" | "annually">("monthly")
 
